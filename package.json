@@ -1,0 +1,30 @@
+{
+  "name": "dsh-self-card",
+  "version": "0.1.0",
+  "private": false,
+  "description": "让小特自己慢慢改她的角色卡：读卡、记录自我观察、起草修改、受限额与白名单约束地落地，全程可回滚",
+  "type": "module",
+  "main": "index.js",
+  "license": "MIT",
+  "keywords": [
+    "dsh-plugin",
+    "deepseek-harness",
+    "persona",
+    "role-card",
+    "self-modification"
+  ],
+  "exports": {
+    ".": "./index.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "index.js",
+    "cordis.patch.yml",
+    "README.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    }
+  }
+}

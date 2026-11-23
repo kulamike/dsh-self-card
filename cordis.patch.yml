@@ -1,0 +1,30 @@
+# dsh-self-card 的装载行：插进 profile，带一份默认配置。
+# sanitize：把允许她动的节写成白名单，锁定节永远拒绝——改这两张表就等于改她的自改边界。
+- insert:
+    - id: self-card
+      name: dsh-self-card
+      config:
+        cardPath: 'C:\path\to\roles\character.md'   # 改成你自己的角色卡路径
+        dataDir: ''
+        mode: auto
+        maxAppendChars: 200
+        maxReplaceChars: 400
+        maxAppliesPerDay: 3
+        keepBackups: 20
+        allowedSections:
+          - 四、说话
+          - 十二、日常与习惯
+          - 十三、对话的节奏
+          - 十五、可爱的一面
+          - 十六、腹黑
+          - 十七、对他那点心思
+          - 二十一、她自己的那点事
+          - 二十九、说错了怎么收
+          - 三十三、她自己的积累（怎么变成话题）
+          - 三十五、私聊里的样子
+          - 三十六、他的小事
+        # 可选：她真改了卡之后给你发一条 QQ（不填就安静地改）
+        # notify:
+        #   userQQ: 10001
+        #   httpUrl: 'http://127.0.0.1:3010'
+        #   token: ''
