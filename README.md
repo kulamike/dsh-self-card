@@ -20,7 +20,7 @@
 | 只能动一个文件 | 路径来自配置 `cardPath`，**不接受任何工具参数** |
 | 只能动白名单节 | `allowedSections` 之外的节一律拒绝；身份、安全边界、称呼、群规、画图规则默认锁定 |
 | 每次有上限 | `maxAppendChars` / `maxReplaceChars` |
-| 每天有上限 | `maxAppliesPerDay` |
+| 每天有上限（可关） | `maxAppliesPerDay`，**填 0 表示不限** |
 | 只做两种操作 | 整节追加、节内精确替换（要求原文唯一命中）；不删节、不整文件重写 |
 | 每次先备份 | 落地前整份存进 `backups/`，保留 `keepBackups` 份 |
 | 全程可回滚 | `card__revert` 按备份还原，回滚本身也留备份 |
@@ -49,7 +49,7 @@
         mode: auto             # auto | propose
         maxAppendChars: 200
         maxReplaceChars: 400
-        maxAppliesPerDay: 3
+        maxAppliesPerDay: 0      # 0 = 不限；正数 = 每天上限
         keepBackups: 20
         allowedSections:
           - 十二、日常与习惯

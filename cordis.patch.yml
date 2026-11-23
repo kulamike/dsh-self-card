@@ -9,7 +9,7 @@
         mode: auto
         maxAppendChars: 200
         maxReplaceChars: 400
-        maxAppliesPerDay: 3
+        maxAppliesPerDay: 0   # 0 = 不限；填正数就是每天上限
         keepBackups: 20
         allowedSections:
           - 四、说话

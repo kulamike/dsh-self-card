@@ -54,7 +54,7 @@ function resolveConfig(raw) {
   cfg.mode = cfg.mode === 'propose' ? 'propose' : 'auto'
   cfg.maxAppendChars = Math.max(20, Math.min(2000, Number(cfg.maxAppendChars) || 200))
   cfg.maxReplaceChars = Math.max(20, Math.min(4000, Number(cfg.maxReplaceChars) || 400))
-  cfg.maxAppliesPerDay = Math.max(0, Math.min(20, Number(cfg.maxAppliesPerDay) || 3))
+  cfg.maxAppliesPerDay = Math.max(0, Math.min(500, Number(cfg.maxAppliesPerDay ?? 3))); // 0 = 不限
   cfg.keepBackups = Math.max(1, Math.min(200, Number(cfg.keepBackups) || 20))
   cfg.allowedSections = Array.isArray(cfg.allowedSections)
     ? cfg.allowedSections.map((s) => String(s).trim()).filter(Boolean)
@@ -202,7 +202,7 @@ function toolRead(cfg, args) {
       totalChars: text.length,
       mode: cfg.mode,
       usedToday: appliedToday(cfg),
-      quota: cfg.maxAppliesPerDay,
+      quota: cfg.maxAppliesPerDay > 0 ? cfg.maxAppliesPerDay : '不限',
       sections: idx,
     }
   }
@@ -326,7 +326,7 @@ function toolApply(cfg, args) {
   }
 
   const used = appliedToday(cfg)
-  if (used >= cfg.maxAppliesPerDay) {
+  if (cfg.maxAppliesPerDay > 0 && used >= cfg.maxAppliesPerDay) {
     throw new Error(`今天的额度用完了（${used}/${cfg.maxAppliesPerDay} 次），明天再来`)
   }
 
@@ -364,7 +364,7 @@ function toolApply(cfg, args) {
     section: draft.section,
     op: draft.op,
     usedToday: used + 1,
-    quota: cfg.maxAppliesPerDay,
+    quota: cfg.maxAppliesPerDay > 0 ? cfg.maxAppliesPerDay : '不限',
     backup,
     diff: draft.diff,
   }
@@ -388,7 +388,7 @@ function toolHistory(cfg, args) {
   return {
     ok: true,
     usedToday: appliedToday(cfg),
-    quota: cfg.maxAppliesPerDay,
+    quota: cfg.maxAppliesPerDay > 0 ? cfg.maxAppliesPerDay : '不限',
     entries: entries.map((e) => ({
       at: new Date(e.ts).toLocaleString('zh-CN', { hour12: false }),
       section: e.section,
@@ -456,7 +456,7 @@ export function apply(ctx, rawConfig) {
       if (!v) return '没有结果'
       if (v.sections) {
         const rows = v.sections.map((s) => `${s.line}行 ${s.chars}字 ${s.editable ? '可改' : '锁定'} | ${s.title}`)
-        return `共 ${v.sections.length} 节，全文 ${v.totalChars} 字；今天已改 ${v.usedToday}/${v.quota} 次\n${rows.join('\n')}`
+        return `共 ${v.sections.length} 节，全文 ${v.totalChars} 字；今天已改 ${v.usedToday} 次（上限 ${v.quota}）\n${rows.join('\n')}`
       }
       return `${v.title}（${v.editable ? '可改' : '锁定'}，${v.chars} 字）\n\n${v.text}`
     }),
@@ -514,7 +514,7 @@ export function apply(ctx, rawConfig) {
     },
     output: textOut({ type: 'object' }, (v) => {
       if (!v.ok && v.needApproval) return `还没落地：${v.message}\n草稿 ${v.draftId} 已经存着`
-      return `已写进「${v.section}」，今天第 ${v.usedToday}/${v.quota} 次；备份 ${v.backup}`
+      return `已写进「${v.section}」，今天第 ${v.usedToday} 次（上限 ${v.quota}）；备份 ${v.backup}`
     }),
     execute: async (args) => toolApply(cfg, args || {}),
   })
@@ -528,9 +528,9 @@ export function apply(ctx, rawConfig) {
       additionalProperties: false,
     },
     output: textOut({ type: 'object' }, (v) => {
-      if (!v.entries.length) return `还没改过。今天 ${v.usedToday}/${v.quota} 次`
+      if (!v.entries.length) return `还没改过。今天已改 ${v.usedToday} 次（上限 ${v.quota}）`
       const rows = v.entries.map((e) => `${e.at} 【${e.section}】${e.op} ${e.addedChars >= 0 ? '+' : ''}${e.addedChars}字｜${e.reason}`)
-      return `今天 ${v.usedToday}/${v.quota} 次\n${rows.join('\n')}`
+      return `今天已改 ${v.usedToday} 次（上限 ${v.quota}）\n${rows.join('\n')}`
     }),
     execute: async (args) => toolHistory(cfg, args || {}),
   })
