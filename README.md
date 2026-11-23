@@ -1,5 +1,8 @@
 # dsh-self-card
 
+> 仓库：<https://github.com/kulamike/dsh-self-card>
+> 安装：`plugin_manager install_bundle github:kulamike/dsh-self-card`，或把它 clone 下来用本地目录装（Plugins → Add plugin）。
+
 让角色自己慢慢改她的角色卡 —— 但只开一条窄缝。
 
 人的性格不是一成不变的。如果一张角色卡只能由主人手改，她就会永远停在某一版上，所谓「成长」全靠主人替她写。这个插件给她一套**受约束的自我编辑**能力：读卡、记观察、起草、落地、回滚，全程留痕。
